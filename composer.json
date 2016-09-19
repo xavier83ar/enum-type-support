@@ -3,7 +3,7 @@
     "description": "A CakePHP plugin for supporting enum database types independently of database engine",
     "type": "cakephp-plugin",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "require": {
         "php": ">=5.4.16",
         "cakephp/cakephp": "~3.0"
