@@ -157,6 +157,31 @@ class EnumType extends Type
     }
 
     /**
+     * Validator function. Bootstrap from plugin add this as a validation provider under "enum" key.
+     * Then is possible to use this function (rule) to validate enum data.
+     *
+     * @param string $value Value to check, from validator
+     * @return bool|mixed
+     */
+    public function isValid($value)
+    {
+        list($enum, $val) = explode($this->_separator, (string)$value);
+        if (!$enum || !$val) {
+            return false;
+        }
+        
+        try {
+            $className = $this->_getClassNameForEnum($enum);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+    /** @var EnumInterface $myEnum */
+        $myEnum = new $className();
+        return $myEnum->isValid($val);
+    }
+
+    /**
      * @param string $enum
      * @return string full class name
      */
