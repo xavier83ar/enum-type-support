@@ -165,6 +165,10 @@ class EnumType extends Type
      */
     public function isValid($value)
     {
+        if (strpos($value, $this->_separator) === false) {
+            return false;
+        }
+        
         list($enum, $val) = explode($this->_separator, (string)$value);
         if (!$enum || !$val) {
             return false;
