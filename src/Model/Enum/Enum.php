@@ -4,6 +4,7 @@ namespace EnumTypeSupport\Model\Enum;
 
 use Cake\Database\Type;
 use EnumTypeSupport\Database\Type\EnumType;
+use JsonSerializable;
 use ReflectionClass;
 use RuntimeException;
 
@@ -11,7 +12,7 @@ use RuntimeException;
  * Class Enum
  * @package EnumTypeSupport\Model\Enum
  */
-abstract class Enum implements EnumInterface
+abstract class Enum implements EnumInterface, JsonSerializable
 {
     /**
      * @var string
@@ -92,7 +93,16 @@ abstract class Enum implements EnumInterface
     {
     /** @var EnumType $enumType */
         $enumType = Type::build('enum');
+
         return $enumType->options(get_called_class());
+    }
+
+    /**
+     * @return string
+     */
+    public function jsonSerialize()
+    {
+        return $this->value();
     }
 
     /**
@@ -115,6 +125,7 @@ abstract class Enum implements EnumInterface
             if (!$this->isValid($key)) {
                 throw new RuntimeException(__("Key {0} is not a valid value.", $key));
             }
+
             return $key === $this->_currentValue;
         }
 
@@ -129,6 +140,7 @@ abstract class Enum implements EnumInterface
         if (empty($this->_contants)) {
             $this->_contants = (new ReflectionClass(get_class($this)))->getConstants();
         }
+
         return $this->_contants;
     }
 }

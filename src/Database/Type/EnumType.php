@@ -22,7 +22,7 @@ class EnumType extends Type
      * @var array
      */
     private $_enumClassMap = [];
-    
+
     /**
      * @var EnumInterface[]
      */
@@ -37,15 +37,27 @@ class EnumType extends Type
      */
     public function toDatabase($value, Driver $driver)
     {
+        if (is_string($value)) {
+            if (strpos($this->_separator, $value) !== false) {
+                return $value;
+            } else {
+                throw new RuntimeException(__(
+                    "Value ({0}) is a string, but doesn't contain a separator block ({1}), which is needed.",
+                    [$value, $this->_separator]
+                ));
+            }
+        }
         if (!($value instanceof EnumInterface)) {
             throw new RuntimeException(__('Value ({0}) must be instance of EnumInterface or a string.', $value));
         }
+
         $reverseMap = array_flip($this->_enumClassMap);
         $className = get_class($value);
 
         if (empty($reverseMap[$className])) {
             throw new RuntimeException(__('No enum class map found for class name {0}.', $className));
         }
+
         return $reverseMap[$className] . $this->_separator . $value->value();
     }
 
@@ -75,19 +87,26 @@ class EnumType extends Type
      * that make sense for the rest of the ORM/Database layers.
      *
      * @param mixed $value The value to convert.
-     * @return mixed Converted value.
+     * @return EnumInterface|null Converted value.
      */
     public function marshal($value)
     {
         if ($value instanceof EnumInterface) {
             return $value;
         }
-        
+
         if (empty($value)) {
             return null;
         }
-        
+
         $value = (string)$value;
+        if (strpos($this->_separator, $value) === false) {
+            throw new RuntimeException(__(
+                "Value ({0}) doesn't contain separator string ({1}), can't marshall it into a class.",
+                [$value, $this->_separator]
+            ));
+        }
+
         list($enum, $val) = explode($this->_separator, $value);
         $className = $this->_getClassNameForEnum($enum);
 
