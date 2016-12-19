@@ -100,7 +100,7 @@ class EnumType extends Type
         }
 
         $value = (string)$value;
-        if (strpos($this->_separator, $value) === false) {
+        if (strpos($value, $this->_separator) === false) {
             throw new RuntimeException(__(
                 "Value ({0}) doesn't contain separator string ({1}), can't marshall it into a class.",
                 [$value, $this->_separator]
