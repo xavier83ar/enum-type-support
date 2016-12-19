@@ -145,7 +145,7 @@ class EnumType extends Type
         if ($enum instanceof EnumInterface) {
             $enum = get_class($enum);
         }
-        
+
         $this->_enumClassMap[$prefix] = $enum;
     }
 
@@ -161,7 +161,7 @@ class EnumType extends Type
     }
 
     /**
-     * @param string $className
+     * @param string $className ClassName to retrieve its options
      * @return array
      */
     public function options($className)
@@ -192,12 +192,12 @@ class EnumType extends Type
         if (strpos($value, $this->_separator) === false) {
             return false;
         }
-        
+
         list($enum, $val) = explode($this->_separator, (string)$value);
         if (!$enum || !$val) {
             return false;
         }
-        
+
         try {
             $className = $this->_getClassNameForEnum($enum);
         } catch (\Exception $e) {
@@ -206,11 +206,21 @@ class EnumType extends Type
 
     /** @var EnumInterface $myEnum */
         $myEnum = new $className();
+
         return $myEnum->isValid($val);
     }
 
     /**
-     * @param string $enum
+     * @param string $className class name
+     * @return string
+     */
+    public function getEnumPrefix($className)
+    {
+        return $this->_getEnumForClassName($className);
+    }
+
+    /**
+     * @param string $enum enum name
      * @return string full class name
      */
     protected function _getClassNameForEnum($enum)
@@ -218,11 +228,12 @@ class EnumType extends Type
         if (!array_key_exists($enum, $this->_enumClassMap) || !class_exists($this->_enumClassMap[$enum])) {
             throw new RuntimeException(__('Enum Class for {0} enum map not found', $enum));
         }
+
         return $this->_enumClassMap[$enum];
     }
 
     /**
-     * @param string $className
+     * @param string $className class name
      * @return string
      */
     protected function _getEnumForClassName($className)
@@ -231,6 +242,6 @@ class EnumType extends Type
         if (array_key_exists($className, $reverseMap) && !empty($reverseMap[$className])) {
             return $reverseMap[$className];
         }
-        throw new RuntimeException(__('{} class map not found'));
+        throw new RuntimeException(__('{0} class map not found', $className));
     }
 }

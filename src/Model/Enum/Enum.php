@@ -102,7 +102,7 @@ abstract class Enum implements EnumInterface, JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->value();
+        return $this->__toString();
     }
 
     /**
@@ -110,7 +110,10 @@ abstract class Enum implements EnumInterface, JsonSerializable
      */
     public function __toString()
     {
-        return $this->_currentValue;
+    /** @var EnumType $enumType */
+        $enumType = Type::build('enum');
+
+        return $enumType->getEnumPrefix(get_called_class()) . $enumType->getSeparator() . $this->_currentValue;
     }
 
     /**
