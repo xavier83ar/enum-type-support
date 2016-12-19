@@ -37,6 +37,10 @@ class EnumType extends Type
      */
     public function toDatabase($value, Driver $driver)
     {
+        if (null === $value) {
+            return $value;
+        }
+
         if (is_string($value)) {
             if (strpos($this->_separator, $value) !== false) {
                 return $value;
@@ -47,6 +51,7 @@ class EnumType extends Type
                 ));
             }
         }
+
         if (!($value instanceof EnumInterface)) {
             throw new RuntimeException(__('Value ({0}) must be instance of EnumInterface or a string.', $value));
         }
