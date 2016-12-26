@@ -106,6 +106,14 @@ abstract class Enum implements EnumInterface, JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return [$this->_currentValue];
+    }
+
+    /**
      * @return mixed
      */
     public function __toString()
