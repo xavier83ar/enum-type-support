@@ -42,7 +42,7 @@ class EnumType extends Type
         }
 
         if (is_string($value)) {
-            if (strpos($this->_separator, $value) !== false) {
+            if (strpos($value, $this->_separator) !== false) {
                 return $value;
             } else {
                 throw new RuntimeException(__(
